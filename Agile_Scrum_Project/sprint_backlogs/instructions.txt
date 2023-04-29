@@ -1,0 +1,9 @@
+3)	Initial Sprint Backlog:  On Wednesday, April 12th, during class, we will create your team’s Sprint Backlog using our Product Backlog we developed on Monday.  
+We will use the same type of process as was shown in our video, the Sprint Planning Meeting.  We will break down the PBIs into tasks and determine how much work 
+can be done in the allotted time for the Sprint.
+
+ACTION REQUIRED:  You will put a clean copy of your Initial Sprint Backlog, named Initial_Sprint_Backlog.xxx  on GitHub by Friday, April 14th at 6:00 p.m.  
+You should only have to clean up what we did during class and put your document(s) on GitHub. Type up your work and put on GitHub under the /sprint_backlogs directory.
+Be very sure you understand what goes on the Sprint Backlog.  It is a separate document from the Product Backlog.  May I suggest a Xcel spreadsheet.  
+Your PBIs must be fully defined on the document.  Do NOT just say PBI1 from the product backlog as a way to account for the PBI.  
+Give the full user story for each PBI that is being worked on during the sprint.

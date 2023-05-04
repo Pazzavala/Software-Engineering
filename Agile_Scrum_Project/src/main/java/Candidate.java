@@ -97,9 +97,7 @@ public class Candidate {
             this.ballots[0] = ballot;
         } else {
             Ballot[] newBallots = new Ballot[this.ballots.length + 1];
-            for (int i = 0; i < this.ballots.length; i++) {
-                newBallots[i] = this.ballots[i];
-            }
+            System.arraycopy(this.ballots, 0, newBallots, 0, this.ballots.length);
             newBallots[this.ballots.length] = ballot;
             this.ballots = newBallots;
         }

@@ -43,10 +43,15 @@ public class Party {
         return winners;
     }
 
+    /** Set the number of candidates
+     */
     public void setNumCandidates() {
         numCandidates = candidates.length;
     }
 
+    /** Get the number of candidates
+     * @return number of candidates
+     */
     public int getNumCandidates() {
         return numCandidates;
     }

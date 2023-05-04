@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Ballot {
 
-    private ArrayList<Integer> ballot = null;
+    private final ArrayList<Integer> ballot;
 
     /**
      * Constructs a ballot object with a list of integers representing vote preferences.

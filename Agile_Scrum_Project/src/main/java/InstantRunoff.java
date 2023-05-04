@@ -3,15 +3,15 @@ import java.util.Random;
 import java.util.Map;
 
 /** Class that represents an Instant Runoff election.
- * @author Maria Zavala & Aaron Raines
+ * @author Maria Zavala and Aaron Raines
  * @version 3.0
  * @since 2.0
  */
 public class InstantRunoff {
     private final AuditFile electionFile;
-    private final ArrayList<Candidate> droppedCandidates = new ArrayList<Candidate>();
-    private Ballot[] ballots = null;
-    private Candidate[] candidates = null;
+    private final ArrayList<Candidate> droppedCandidates = new ArrayList<>();
+    private final Ballot[] ballots;
+    private final Candidate[] candidates;
     private final int numBallots;
     private Candidate winner;
     private int round = 0;
@@ -33,18 +33,19 @@ public class InstantRunoff {
      */
     public Candidate runElection() {
 
-        ArrayList<Candidate> lowestCandidates = new ArrayList<Candidate>();
+        ArrayList<Candidate> lowestCandidates = new ArrayList<>();
         ArrayList<Candidate> validCandidates = new ArrayList<>();
         Candidate lowestCandidate;
         boolean haveWinner = false;
         boolean winnerTie = false;
         boolean loserTie = false;
+
         // Round 1 Distribute Votes
         ++round;
         for (Ballot ballot : ballots)
             distributeBallot(ballot, round);
         // Creating a new roundResult
-        RoundResult roundResult = new RoundResult(round);
+        RoundResult roundResult = new RoundResult();
 
         int i = 0;
         for (Candidate candidate: candidates) {
@@ -55,42 +56,33 @@ public class InstantRunoff {
                 droppedCandidates.add(candidate);
                 roundResult.setDroppedCandidate(candidate.getName());
             }
-            roundResult.addCandidateResult(candidate.getName(), candidate.getNumVotes());
+            roundResult.setCandidateResult(candidate.getName(), candidate.getNumVotes());
             candidate.setCandidateID(i++);
         }
         
         do {
             //adding to roundResult
-            roundResult = new RoundResult(round);
-
-            for (Candidate candidate: candidates) {
-                roundResult.setCandidateName(candidate.getName());
-            }
-
-            roundResult.setNumCandidates(candidates.length);
-            roundResult.setNumBallots(numBallots - droppedCandidates.size());
+            roundResult = new RoundResult();
             roundResults.add(roundResult);
 
-            int maxVotes = 0, numVotes = 0, minVotes = numBallots;
+            int maxVotes = 0, numVotes, minVotes = numBallots;
 
-            int j = 1;
             for (Candidate candidate : validCandidates) {
                 numVotes = candidate.getNumVotes();
-                roundResult.addCandidateResult("Candidate " + (candidate.getCandidateID() + 1), numVotes);
+                roundResult.setCandidateResult("Candidate " + (candidate.getCandidateID() + 1), numVotes);
+
                 // Set winner if it has the majority of votes
                 if (numVotes > maxVotes) {
                     maxVotes = numVotes;
                     winner = candidate;
+
                     // Check if candidate has received more than 50% of votes
-                    if (maxVotes >= numBallots/2) {
-                        winnerTie = false;
-                    } else {
-                        winnerTie = true;
-                    }
+                    winnerTie = maxVotes < (numBallots / 2);
                 } // Tied candidates for winner
                 else if (numVotes == maxVotes) {
                     winnerTie = true;
                 }
+
                 // Only add the single lowest candidate found.
                 if (numVotes < minVotes) {
                     minVotes = numVotes;
@@ -125,7 +117,6 @@ public class InstantRunoff {
 
             } else {
                 haveWinner = true;
-                roundResult.setWinner(winner.getName());
             }
             round++;
         } while (!haveWinner);
@@ -136,6 +127,7 @@ public class InstantRunoff {
 
     /** Method that drops a candidate with the lowest amount of votes.
      * @param candidate the candidate object who is being dropped.
+     * @param round the current round that the algorithm is running.
      * @return returns the candidate that has been dropped.
      */
     public Candidate dropCandidate(Candidate candidate, int round) {
@@ -180,20 +172,16 @@ public class InstantRunoff {
         return droppedCandidates;
     }
 
-    public ArrayList getRoundResults(){
-        return roundResults;
-    }
-
     /** Prints the results of the Instant Runoff election to the console.
      * Displays the number of votes received by each candidate in each round, 
      * as well as the name of any candidates who have been dropped from the election.
      */
     public void printResults() {
         int numRounds = this.roundResults.size();
-        int numCandidates = this.roundResults.get(0).getNumCandidates();
+        int numCandidates = this.candidates.length;
 
         // Print header row
-        System.out.printf("%-20s", "Round");
+        System.out.printf("\n%-20s", " ");
         for (int i = 1; i <= numCandidates; i++) {
             System.out.printf("%-20s", "Candidate " + i);
         }
@@ -220,7 +208,6 @@ public class InstantRunoff {
 
                 if (i > 0) {
                     RoundResult prevRoundResult = this.roundResults.get(i - 1);
-                    RoundResult Result = roundResults.get(i - 1);
                     Map<String, Integer> prevCandidateResults = prevRoundResult.getCandidateResults();
                     votesAddedOrSubtracted = candidateResults.getOrDefault(candidateName, 0) - prevCandidateResults.getOrDefault(candidateName, 0);
                 }
@@ -231,5 +218,12 @@ public class InstantRunoff {
             System.out.printf("%-20s", droppedCandidate != null ? droppedCandidate : "");
             System.out.println();
         }
+
+        // Print the Winner of Election
+        System.out.println("______________________________");
+        System.out.printf("%-20s", "Winner");
+        System.out.printf(this.winner.getName());
+        System.out.println();
+        System.out.println();
     }
 }

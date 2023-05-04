@@ -9,6 +9,7 @@ import java.util.Scanner;
  * @since 1.0
  */
 public class AuditFile {
+    private boolean runElection = false;
     private String name;
     private String electionType;
     private String electionDate;
@@ -24,8 +25,8 @@ public class AuditFile {
 
     /**
      * This constructor creates an instance of an AuditFile given the file name and the election date.
-     * @param name
-     * @param date
+     * @param name Name of the audit file
+     * @param date the date of creation
      */
     public AuditFile(String name, String date) {
         this.name = name;
@@ -48,11 +49,12 @@ public class AuditFile {
      */
     public void collectFileInfo() {
         try {
-//            name = System.getProperty("user.dir") + "/Project2/testing/ElectionFiles/" + name; //ONLY WORKS IN ELECTION MAIN
-//            name = System.getProperty("user.dir") + "/testing/CPLtestFiles/" + name; //ONLY WORKS IN test\java FILES FOR CPL
-            name = System.getProperty("user.dir") + "/testing/IRtestFiles/" + name; //ONLY WORKS IN test\java FILES FOR IR
-//            name = System.getProperty("user.dir") + "/testing/POtestFiles/" + name; //ONLY WORKS IN test\java FILES FOR PO
-//            name = System.getProperty("user.dir") + "/testing/" + name; //ONLY WORKS IN AuditFileTest.java
+            if (this.runElection) {
+                name = System.getProperty("user.dir") + "/Project2/testing/" + name; //ONLY WORKS IN ELECTION MAIN
+            } else {
+                name = System.getProperty("user.dir") + "/testing/" + name; // WORKS for testing all PO/CPL/IR/AuditFile
+            }
+
             System.out.println(name);
             Scanner s = new Scanner(new File(name));
             int header = 0;
@@ -60,135 +62,138 @@ public class AuditFile {
             while (s.hasNextLine()) { //read file until last line reached
                 String line = s.nextLine();
                 if (header == 0) { //collecting header info
-                    if (line.equals("IR")) { //IR election
-                        //get election type
-                        electionType = line;
+                    electionType = line;
+                    switch (line) {
+                        case "IR": { //IR election
+                            //get election type
+//                            electionType = line;
 
-                        //get number of candidates
-                        line = s.nextLine();
-                        numCandidates = Integer.parseInt(line);
-                        candidates = new Candidate[numCandidates];
-
-                        //get candidates
-                        line = s.nextLine();
-                        String[] l = line.split(",");
-                        for (int j = 0; j < l.length; j++) {
-                            String[] c = l[j].split(" ");
-                            if (j == 0) {
-                                Party p = new Party(c[1]);
-                                Candidate cand = new Candidate(c[0], p);
-                                candidates[j] = cand;
-                            }
-                            else {
-                                Party p = new Party(c[2]);
-                                Candidate cand = new Candidate(c[1], p);
-                                candidates[j] = cand;
-                            }
-                        }
-
-                        //get nuber of ballots
-                        line = s.nextLine();
-                        numBallots = Integer.parseInt(line);
-
-                        ballots = new Ballot[numBallots];
-                        header++;
-                        System.out.println("electionType: " + electionType
-                        + "  numCandidates: " + numCandidates + "  candidates: ");
-                        for (int i = 0; i < candidates.length; i++) {
-                            System.out.print(candidates[i].getName() + "," + candidates[i].getParty().getpName() + " ");
-                        }
-                        System.out.println("\nnumBallots: " + numBallots);
-                        continue;
-                    }
-                    else if (line.equals("CPL")) { //CPL election
-                        //get election type
-                        electionType = line;
-
-                        //get number of parties
-                        line = s.nextLine();
-                        numParties = Integer.parseInt(line);
-                        parties = new Party[numParties];
-
-                        //get parties
-                        line = s.nextLine();
-                        String[] l = line.split(", ");
-                        for (int j = 0; j < l.length; j++) {
-                            Party p = new Party(l[j]);
-                            parties[j] = p;
-                        }
-
-                        //get candidates
-                        int cn = 0;
-                        for (int i = 0; i < numParties; i++) {
+                            //get number of candidates
                             line = s.nextLine();
-                            String[] cand = line.split(",", -1);
-                            Candidate[] cList = new Candidate[cand.length];
-                            for (int j = 0; j < cand.length; j++) {
-                                Candidate c = new Candidate(cand[j], parties[i]);
-                                cn++;
-                                cList[j] = c;
+                            numCandidates = Integer.parseInt(line);
+                            candidates = new Candidate[numCandidates];
+
+                            //get candidates
+                            line = s.nextLine();
+                            String[] l = line.split(",");
+                            for (int j = 0; j < l.length; j++) {
+                                String[] c = l[j].split(" ");
+                                if (j == 0) {
+                                    Party p = new Party(c[1]);
+                                    Candidate cand = new Candidate(c[0], p);
+                                    candidates[j] = cand;
+                                } else {
+                                    Party p = new Party(c[2]);
+                                    Candidate cand = new Candidate(c[1], p);
+                                    candidates[j] = cand;
+                                }
                             }
-                            parties[i].setCandidates(cList);
-                        }
-                        numCandidates = cn;
 
-                        //get number of seats
-                        line = s.nextLine();
-                        numSeats = Integer.parseInt(line);
+                            //get nuber of ballots
+                            line = s.nextLine();
+                            numBallots = Integer.parseInt(line);
 
-                        //get number of ballots
-                        line = s.nextLine();
-                        numBallots = Integer.parseInt(line);
-
-                        ballots = new Ballot[numBallots];
-                        header++;
-
-                        System.out.println("electionType: " + electionType
-                        + "  numParties: " + numParties + "  parties: ");
-                        for (int i = 0; i < parties.length; i++) {
-                            System.out.print(parties[i].getpName() + ": ");
-                            for (int j = 0; j < parties[i].getCandidates().length; j++) {
-                                System.out.print(parties[i].getCandidates()[j].getName() + ", ");
+                            ballots = new Ballot[numBallots];
+                            header++;
+                            System.out.println("electionType: " + electionType
+                                    + "  numCandidates: " + numCandidates + "  candidates: ");
+                            for (Candidate candidate : candidates) {
+                                System.out.print(candidate.getName() + "," + candidate.getParty().getpName() + " ");
                             }
+                            System.out.println("\nnumBallots: " + numBallots);
+                            continue;
                         }
-                        System.out.println("\nnumSeats: " + numSeats + "  numBallots: " + numBallots);
-                        continue;
-                    }
-                    else if (line.equals("PO")) {
-                        //get number of candidates
-                        electionType = line;
-                        line = s.nextLine();
-                        numCandidates = Integer.parseInt(line);
-                        candidates = new Candidate[numCandidates];
+                        case "CPL": { //CPL election
+                            //get election type
+//                            electionType = line;
 
-                        //get candidates
-                        line = s.nextLine();
-                        String[] l = line.split(",");
-                        for (int j = 0; j < l.length; j++) {
-                            String[] c = l[j].split(" ");
-                            if (j == 0) {
-                                Party p = new Party(c[1]);
-                                Candidate cand = new Candidate(c[0], p);
-                                candidates[j] = cand;
-                            } else {
-                                Party p = new Party(c[2]);
-                                Candidate cand = new Candidate(c[1], p);
-                                candidates[j] = cand;
+                            //get number of parties
+                            line = s.nextLine();
+                            numParties = Integer.parseInt(line);
+                            parties = new Party[numParties];
+
+                            //get parties
+                            line = s.nextLine();
+                            String[] l = line.split(", ");
+                            for (int j = 0; j < l.length; j++) {
+                                Party p = new Party(l[j]);
+                                parties[j] = p;
                             }
-                        }
 
-                        //get number of ballots
-                        line = s.nextLine();
-                        numBallots = Integer.parseInt(line);
-                        ballots = new Ballot[numBallots];
-                        continue;
+                            //get candidates
+                            int cn = 0;
+                            for (int i = 0; i < numParties; i++) {
+                                line = s.nextLine();
+                                String[] cand = line.split(",", -1);
+                                Candidate[] cList = new Candidate[cand.length];
+                                for (int j = 0; j < cand.length; j++) {
+                                    Candidate c = new Candidate(cand[j], parties[i]);
+                                    cn++;
+                                    cList[j] = c;
+                                }
+                                parties[i].setCandidates(cList);
+                            }
+                            numCandidates = cn;
+
+                            //get number of seats
+                            line = s.nextLine();
+                            numSeats = Integer.parseInt(line);
+
+                            //get number of ballots
+                            line = s.nextLine();
+                            numBallots = Integer.parseInt(line);
+
+                            ballots = new Ballot[numBallots];
+                            header++;
+
+                            System.out.println("electionType: " + electionType
+                                    + "  numParties: " + numParties + "  parties: ");
+                            for (Party party : parties) {
+                                System.out.print(party.getpName() + ": ");
+                                for (int j = 0; j < party.getCandidates().length; j++) {
+                                    System.out.print(party.getCandidates()[j].getName() + ", ");
+                                }
+                            }
+                            System.out.println("\nnumSeats: " + numSeats + "  numBallots: " + numBallots);
+                            continue;
+                        }
+                        case "PO": {
+                            //get number of candidates
+//                            electionType = line;
+                            line = s.nextLine();
+                            numCandidates = Integer.parseInt(line);
+                            candidates = new Candidate[numCandidates];
+
+                            //get candidates
+                            line = s.nextLine();
+                            String[] l = line.split(",");
+                            for (int j = 0; j < l.length; j++) {
+                                String[] c = l[j].split(" ");
+                                if (j == 0) {
+                                    Party p = new Party(c[1]);
+                                    Candidate cand = new Candidate(c[0], p);
+                                    candidates[j] = cand;
+                                } else {
+                                    Party p = new Party(c[2]);
+                                    Candidate cand = new Candidate(c[1], p);
+                                    candidates[j] = cand;
+                                }
+                            }
+
+                            //get number of ballots
+                            line = s.nextLine();
+                            numBallots = Integer.parseInt(line);
+                            ballots = new Ballot[numBallots];
+                            continue;
+                        }
                     }
                 }
 
                 //collecting ballots
                 String[] values;
-                if (electionType.equals("IR")) {values = new String[numCandidates];}
-                else {values = new String[numParties];}
+                if (!electionType.equals("IR")) {
+                    values = new String[numParties];
+                }
 
                 values = line.split(",", -1);
                 int i;
@@ -196,7 +201,7 @@ public class AuditFile {
                     if (values[i].equals("")) {values[i] = "0";}
                 }
 
-                ArrayList<Integer> b = new ArrayList<Integer>();
+                ArrayList<Integer> b = new ArrayList<>();
                 for (i = 0; i < values.length; i++) {
                     b.add(Integer.parseInt(values[i]));
                 }
@@ -216,22 +221,9 @@ public class AuditFile {
         }
     }
 
-    public int collectMultipleFileInfo(ArrayList<String> inputNames, String electionType) {
+    public int collectMultipleFileInfo(ArrayList<String> inputNames) {
         try {
-            String prefix = "";
-            if (electionType.equals("IR")) {
-                prefix = System.getProperty("user.dir") + "/Project2/testing/IRtestFiles/";
-            }
-            else if (electionType.equals("CPL")) {
-                prefix = System.getProperty("user.dir") + "/Project2/testing/CPLtestFiles/";
-            }
-            else if (electionType.equals("PO")) {
-                prefix = System.getProperty("user.dir") + "/Project2/testing/POtestFiles/";
-            }
-            else {
-                System.out.println("Incorrect electionType");
-                return -1;
-            }
+            String prefix = System.getProperty("user.dir") + "/Project2/testing/";
 
             int ballotIndex = 0;
             for (int i = 0; i < inputNames.size(); i++) {
@@ -246,151 +238,104 @@ public class AuditFile {
                 while (s.hasNextLine()) {
                     String line = s.nextLine();
                     if (header) {
-                        if (line.equals("IR")) {
-                            if (i == 0) {
-                                electionType = line;
-                                //get number of candidates
-                                line = s.nextLine();
-                                numCandidates = Integer.parseInt(line);
-                                candidates = new Candidate[numCandidates];
-
-                                //get candidates
-                                line = s.nextLine();
-                                String[] l = line.split(",");
-                                for (int j = 0; j < l.length; j++) {
-                                    String[] c = l[j].split(" ");
-                                    if (j == 0) {
-                                        Party p = new Party(c[1]);
-                                        Candidate cand = new Candidate(c[0], p);
-                                        candidates[j] = cand;
-                                    }
-                                    else {
-                                        Party p = new Party(c[2]);
-                                        Candidate cand = new Candidate(c[1], p);
-                                        candidates[j] = cand;
-                                    }
-                                }
-
-                                //get number of ballots
-                                line = s.nextLine();
-                                numBallots = Integer.parseInt(line);
-
-                                ballots = new Ballot[numBallots];
-                            }
-                            else {
-                                line = s.nextLine();
-                                line = s.nextLine();
-                                line = s.nextLine();
-                                numBallots += Integer.parseInt(line);
-
-                                Ballot[] newBallots = new Ballot[numBallots];
-                                for (int b = 0; b < ballots.length; b++) {
-                                    newBallots[b] = ballots[b];
-                                }
-                                ballots = newBallots;
-                            }
-                        }
-                        else if (line.equals("CPL")) {
-                            if (i == 0) {
-                                electionType = line;
-
-                                //get number of parties
-                                line = s.nextLine();
-                                numParties = Integer.parseInt(line);
-                                parties = new Party[numParties];
-
-                                //get parties
-                                line = s.nextLine();
-                                String[] l = line.split(", ");
-                                for (int j = 0; j < l.length; j++) {
-                                    Party p = new Party(l[j]);
-                                    parties[j] = p;
-                                }
-
-                                //get candidates
-                                int cn = 0;
-                                for (int x = 0; x < numParties; x++) {
+                        switch (line) {
+                            case "IR":
+                            case "PO":
+                                if (i == 0) {
+                                    electionType = line;
+                                    //get number of candidates
                                     line = s.nextLine();
-                                    String[] cand = line.split(",", -1);
-                                    Candidate[] cList = new Candidate[cand.length];
-                                    for (int j = 0; j < cand.length; j++) {
-                                        Candidate c = new Candidate(cand[j], parties[x]);
-                                        cn++;
-                                        cList[j] = c;
+                                    numCandidates = Integer.parseInt(line);
+                                    candidates = new Candidate[numCandidates];
+
+                                    //get candidates
+                                    line = s.nextLine();
+                                    String[] l = line.split(",");
+                                    for (int j = 0; j < l.length; j++) {
+                                        String[] c = l[j].split(" ");
+                                        if (j == 0) {
+                                            Party p = new Party(c[1]);
+                                            Candidate cand = new Candidate(c[0], p);
+                                            candidates[j] = cand;
+                                        } else {
+                                            Party p = new Party(c[2]);
+                                            Candidate cand = new Candidate(c[1], p);
+                                            candidates[j] = cand;
+                                        }
                                     }
-                                    parties[x].setCandidates(cList);
+
+                                    //get number of ballots
+                                    line = s.nextLine();
+                                    numBallots = Integer.parseInt(line);
+
+                                    ballots = new Ballot[numBallots];
+                                } else {
+                                    line = s.nextLine();
+                                    line = s.nextLine();
+                                    line = s.nextLine();
+                                    numBallots += Integer.parseInt(line);
+
+                                    Ballot[] newBallots = new Ballot[numBallots];
+                                    System.arraycopy(ballots, 0, newBallots, 0, ballots.length);
+                                    ballots = newBallots;
                                 }
-                                numCandidates = cn;
+                                break;
+                            case "CPL":
+                                if (i == 0) {
+                                    electionType = line;
 
-                                //get number of seats
-                                line = s.nextLine();
-                                numSeats = Integer.parseInt(line);
+                                    //get number of parties
+                                    line = s.nextLine();
+                                    numParties = Integer.parseInt(line);
+                                    parties = new Party[numParties];
 
-                                //get number of ballots
-                                line = s.nextLine();
-                                numBallots = Integer.parseInt(line);
-
-                                ballots = new Ballot[numBallots];
-                            }
-                            else {
-                                line = s.nextLine();
-                                line = s.nextLine();
-                                for (int x = 0; x < numParties; x++) {line = s.nextLine();}
-                                line = s.nextLine();
-                                line = s.nextLine();
-                                numBallots += Integer.parseInt(line);
-
-                                Ballot[] newBallots = new Ballot[numBallots];
-                                for (int b = 0; b < ballots.length; b++) {
-                                    newBallots[b] = ballots[b];
-                                }
-                                ballots = newBallots;
-                            }
-                        }
-                        else if (line.equals("PO")) {
-                            if (i == 0) {
-                                electionType = line;
-
-                                //get number of candidates
-                                line = s.nextLine();
-                                numCandidates = Integer.parseInt(line);
-                                candidates = new Candidate[numCandidates];
-
-                                //get candidates
-                                line = s.nextLine();
-                                String[] l = line.split(",");
-                                for (int j = 0; j < l.length; j++) {
-                                    String[] c = l[j].split(" ");
-                                    if (j == 0) {
-                                        Party p = new Party(c[1]);
-                                        Candidate cand = new Candidate(c[0], p);
-                                        candidates[j] = cand;
+                                    //get parties
+                                    line = s.nextLine();
+                                    String[] l = line.split(", ");
+                                    for (int j = 0; j < l.length; j++) {
+                                        Party p = new Party(l[j]);
+                                        parties[j] = p;
                                     }
-                                    else {
-                                        Party p = new Party(c[2]);
-                                        Candidate cand = new Candidate(c[1], p);
-                                        candidates[j] = cand;
+
+                                    //get candidates
+                                    int cn = 0;
+                                    for (int x = 0; x < numParties; x++) {
+                                        line = s.nextLine();
+                                        String[] cand = line.split(",", -1);
+                                        Candidate[] cList = new Candidate[cand.length];
+                                        for (int j = 0; j < cand.length; j++) {
+                                            Candidate c = new Candidate(cand[j], parties[x]);
+                                            cn++;
+                                            cList[j] = c;
+                                        }
+                                        parties[x].setCandidates(cList);
                                     }
+                                    numCandidates = cn;
+
+                                    //get number of seats
+                                    line = s.nextLine();
+                                    numSeats = Integer.parseInt(line);
+
+                                    //get number of ballots
+                                    line = s.nextLine();
+                                    numBallots = Integer.parseInt(line);
+
+                                    ballots = new Ballot[numBallots];
+                                } else {
+                                    line = s.nextLine();
+                                    line = s.nextLine();
+                                    for (int x = 0; x < numParties; x++) {
+                                        line = s.nextLine();
+                                    }
+                                    line = s.nextLine();
+                                    line = s.nextLine();
+                                    numBallots += Integer.parseInt(line);
+
+                                    Ballot[] newBallots = new Ballot[numBallots];
+                                    System.arraycopy(ballots, 0, newBallots, 0, ballots.length);
+                                    ballots = newBallots;
                                 }
-
-                                //get number of ballots
-                                line = s.nextLine();
-                                numBallots = Integer.parseInt(line);
-
-                                ballots = new Ballot[numBallots];
-                            }
-                            else {
-                                line = s.nextLine();
-                                line = s.nextLine();
-                                line = s.nextLine();
-                                numBallots += Integer.parseInt(line);
-
-                                Ballot[] newBallots = new Ballot[numBallots];
-                                for (int b = 0; b < ballots.length; b++) {
-                                    newBallots[b] = ballots[b];
-                                }
-                                ballots = newBallots;
-                            }
+                                break;
                         }
                         header = false;
                         continue;
@@ -410,10 +355,10 @@ public class AuditFile {
 
                     ballots[ballotIndex] = new Ballot(b);
 
-                    for (int c = 0; c < values.length; c++) {
-                        System.out.print(b.get(c) + ", ");
-                    }
-                    System.out.println();
+//                    for (int c = 0; c < values.length; c++) {
+//                        System.out.print(b.get(c) + ", ");
+//                    }
+//                    System.out.println();
                     ballotIndex++;                
                 }
                 s.close();
@@ -426,6 +371,9 @@ public class AuditFile {
         return -1;
     }
 
+    public void setRunElection(boolean runElection) {
+        this.runElection = runElection;
+    }
     
     /**
      * Return election type.
@@ -492,11 +440,7 @@ public class AuditFile {
      * @return number of parties variable
      */
     public int getnParties() {return numParties;}
-    /**
-     * Set number of ballots.
-     * @param numBallots replacement number of ballots variable
-     */
-    public void setnBallots(int numBallots) {this.numBallots = numBallots;}
+
     /**
      * Return number of seats.
      * @return number of seats variable

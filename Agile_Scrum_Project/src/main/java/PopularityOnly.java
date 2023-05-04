@@ -7,9 +7,13 @@ import java.util.Random;
  * @since 1.0
  */
 public class PopularityOnly {
-    private Ballot[] ballots = null;
-    private Candidate[] candidates = null;
+    private final Ballot[] ballots;
+    private final Candidate[] candidates;
 
+    /** Constructor creates a PopularityOnly object and initializes
+     * its ballots and candidates.
+     * @param electionFile this is where we gather all the information of election files.
+     */
     public PopularityOnly(AuditFile electionFile) {
         this.candidates = electionFile.getCandidates();
         this.ballots = electionFile.getBallots();
@@ -27,7 +31,7 @@ public class PopularityOnly {
         for (Ballot ballot : ballots)
             distributeBallot(ballot);
 
-        int maxVotes = 0, numVotes = 0;
+        int maxVotes = 0, numVotes;
         // Find candidate with max number of votes
         for (Candidate candidate: candidates) {
             numVotes = candidate.getNumVotes();

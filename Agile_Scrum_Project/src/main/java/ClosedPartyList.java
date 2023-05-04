@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /** Class that represents a Closed Party List election.
- * @author Maria Zavala & Ethan Johnson
+ * @author Maria Zavala and Ethan Johnson
  * @version 2.0
  * @since 1.0
  */
@@ -73,6 +73,11 @@ public class ClosedPartyList {
         return winners;
     }
 
+    /** This calculates the number of seats each party receives.
+     * @param party The party name to calculates the seats for.
+     * @return the number of seats that party receives.
+     */
+
     public int calcSeats(Party party) {
         int numPSeats;
 
@@ -89,6 +94,10 @@ public class ClosedPartyList {
         return numPSeats;
     }
 
+    /** This calculates the number of remaining seats each party receives.
+     * @param vParties The list of parties to calculate remaining seats for.
+     * @return The number of remaining seats that parties received.
+     */
     public int calcRemainderSeats(ArrayList<Party> vParties) {
         int numPSeats;
         ArrayList<Party> maxParties = new ArrayList<>();

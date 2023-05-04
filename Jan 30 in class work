@@ -1,0 +1,35 @@
+1.3 Intended Audience and Reading Suggestions
+
+<Describe the different types of reader that the document is intended for, such as developers, 
+project managers, marketing staff, users, testers, and documentation writers. Describe what the 
+rest of this SRS contains and how it is organized. Suggest a sequence for reading the document, 
+beginning with the overview sections and proceeding through the sections that are most pertinent 
+to each reader type.>
+
+Readers & Suggested reading sec:
+Developers - 
+Testers - 
+Voting administrators (customer) - 
+Media Personnel - 
+
+Description of SRS: (how its organized)
+
+
+
+
+
+USER CASE
+
+Name:  Bring in File
+ID: UC_
+Description: The election official can pass the name of a file into the program as a command line argument, or could be asked for the name within the program itself
+Actors: Election official
+Organizational Benefits: More options for input for easier access
+Frequency of use: Every election will have a file brought in for an evaluation
+Triggers:
+Preconditions:
+Postconditions:
+Main Course:
+Alternate Course:
+Exceptions:
+

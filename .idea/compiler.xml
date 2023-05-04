@@ -6,19 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Project2" />
-        <module name="Project1" />
+        <module name="AgileScrum" />
+        <module name="Waterfall" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Project1" target="11" />
-      <module name="Project2" target="11" />
+      <module name="Project1 (1)" target="11" />
+      <module name="Project1 (2)" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Project1" options="-classpath &quot;C:\Users\Maria Zavala\Desktop\GitHub\repo-Team5\Project1\target\classes:C:\Users\Maria Zavala\Desktop\GitHub\repo-Team5\Project1/src/main/java:C:\Users\Maria Zavala\Desktop\GitHub\repo-Team5\Project1/src/test/java&quot;" />
-      <module name="Project2" options="-classpath &quot;C:\Users\Maria Zavala\Desktop\GitHub\repo-Team5\Project2\target\classes:C:\Users\Maria Zavala\Desktop\GitHub\repo-Team5\Project2/src/main/java:C:\Users\Maria Zavala\Desktop\GitHub\repo-Team5\Project2/src/test/java&quot;" />
+      <module name="AgileScrum" options="" />
+      <module name="Project1 (1)" options="-classpath &quot;C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project1\target\classes:C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project1/src/main/java:C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project1/src/test/java&quot;" />
+      <module name="Project1 (2)" options="-classpath &quot;C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project2\target\classes:C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project2/src/main/java:C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project2/src/test/java&quot;" />
+      <module name="Waterfall" options="-classpath &quot;C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project1\target\classes:C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project1/src/main/java:C:\Users\Maria Zavala\Documents\GitHub\csci5801\Project1/src/test/java&quot;" />
     </option>
   </component>
 </project>
